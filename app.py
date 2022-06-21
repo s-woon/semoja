@@ -2,7 +2,7 @@ from flask import Flask, render_template, request, jsonify, redirect, url_for
 app = Flask(__name__)
 
 from pymongo import MongoClient
-client = MongoClient('mongodb+srv://test:sparta@cluster0.yoehfpg.mongodb.net/?retryWrites=true&w=majority')
+client = MongoClient('코드 보안을 위한 ')
 db = client.dbsparta
 
 # JWT 토큰을 만들 때 필요한 비밀문자열입니다. 아무거나 입력해도 괜찮습니다.
