@@ -1,0 +1,26 @@
+.main_nav {
+    width: 100%;
+    height: 250px;
+
+    background-image: linear-gradient(0deg, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('https://cdn-icons-png.flaticon.com/512/6158/6158293.png');
+    background-position: center;
+    background-size: cover;
+
+    color: white;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.logout {
+    margin: 10px 10% 100px 90%;
+}
+
+.search_bar {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
