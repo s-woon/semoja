@@ -13,9 +13,9 @@ app = Flask(__name__)
 # PW = os.environ.get('DB_PW')
 
 # 로그인 화면
-@app.route('/lggin', methods=["GET"])
-def lggin():
-    return render_template('lggin.html')
+@app.route('/login', methods=["GET"])
+def login():
+    return render_template('login.html')
 
 # 회원가입 화면
 @app.route('/signup', methods=["GET"])
