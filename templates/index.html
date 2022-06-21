@@ -20,7 +20,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@200;300;400;500;600;700;900&display=swap"
           rel="stylesheet">
 
-    <title>세모자 - 자격증 상세정보</title>
+    <title>세모자 - 세상의 모든 자격증</title>
     <!--  CSS 영역  -->
     <style>
         .main_nav {
@@ -49,10 +49,66 @@
             align-items: center;
             justify-content: center;
         }
+
+        .mycards {
+            margin: 20px auto 0px auto;
+            width: 95%;
+            max-width: 1200px;
+        }
+
+        .card-title {
+            text-align: center
+        }
     </style>
+
     <!--  자바스크립트 영역  -->
     <script>
+        $(document).ready(function(){
+                listing();
+            });
 
+            function listing() {
+                $.ajax({
+                    type: 'GET',
+                    url: '/certificate',
+                    data: {},
+                    success: function (response) {
+                        console.log(response)
+
+                        let rows = response['certificates']
+
+                        for (let i = 0; i < rows.length; i++) {
+                            let name = rows[i]['jmNm']
+                            let num = i
+
+                            let temp_html = `<div class="col">
+                                                <div class="card h-100" onclick="cert_info(${num})" id="card">
+                                                    <img src="https://cdn-icons-png.flaticon.com/512/5983/5983508.png" class="card-img-top" alt="...">
+                                                    <div class="card-body">
+                                                        <h5 class="card-title">${name}</h5>
+                                                    </div>
+                                                </div>
+                                            </div>`
+
+                            $('#cards-box').append(temp_html)
+                        }
+
+                    }
+                })
+            }
+
+            function cert_info(num) {
+                alert(num+'번 자격증')
+
+                $.ajax({
+                    type: 'POST',
+                    url: '/certificateDetails',
+                    data: {num_give: num},
+                    success: function (response) {
+                        alert('정상작동')
+                    }
+                })
+            }
     </script>
 </head>
 <body>

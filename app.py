@@ -1,5 +1,9 @@
 from flask import Flask, redirect, render_template, request, jsonify, url_for, app
-# from pymongo import MongoClient
+
+from pymongo import MongoClient
+client = MongoClient('')
+db = client.dbsparta
+
 # JWT와 관련 여부 확인 필요
 # from dotenv import load_dotenv
 import os
@@ -27,10 +31,22 @@ def signup():
 def home():
     return render_template('index.html')
 
+@app.route("/certificate", methods=["GET"])
+def certificate_get():
+    certificate_list = list(db.certificate.find({}, {'_id': False}))
+    return jsonify({'certificates': certificate_list})
+
+
 # 자격증 세부정보
 @app.route('/certificateDetails', methods=["GET"])
 def certificate_Details():
     return render_template('certificateDetails.html')
+
+# @app.route('/certificateDetails', methods=["POST"])
+# def certificate_Details():
+#     num_receive = request.form['num_give']
+#     print(num_receive)
+#     return render_template('certificateDetails.html')
 
 # 자격증 세부정보 가져오기
 @app.route('/certificateDetails/get_detail')
