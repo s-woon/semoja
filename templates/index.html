@@ -27,9 +27,7 @@
             width: 100%;
             height: 250px;
 
-            background-image: linear-gradient(0deg, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('https://cdn-icons-png.flaticon.com/512/6158/6158293.png');
-            background-position: center;
-            background-size: cover;
+            border-bottom: lightgray solid 1px;
 
             color: white;
 
@@ -40,16 +38,19 @@
         }
 
         .logout {
-            margin: 10px 10% 100px 90%;
+
+            background-color: black;
+            margin: 10px 10% 0px 90%;
         }
 
-        .search_bar {
-            display: flex;
-            flex-direction: row;
-            align-items: center;
-            justify-content: center;
+        .logo {
+            width:400px;
+            height:200px;
+            background-image: url('/static/semoja_logo.png');
+            background-position: center;
+            background-size: 40%;
+            background-repeat: no-repeat;
         }
-
         .mycards {
             margin: 20px auto 0px auto;
             width: 95%;
@@ -59,30 +60,52 @@
         .card-title {
             text-align: center
         }
+
+        .select-box {
+            margin: 20px auto;
+            width: 200px;
+        }
+
     </style>
 
     <!--  자바스크립트 영역  -->
     <script>
-        $(document).ready(function(){
-                listing();
-            });
+        $(document).ready(function () {
+            let grade = rank();
+            listing(grade);
+        });
 
-            function listing() {
-                $.ajax({
-                    type: 'GET',
-                    url: '/certificate',
-                    data: {},
-                    success: function (response) {
-                        console.log(response)
+        function change() {
+            $('#cards-box').empty()
+            let grade = rank();
+            listing(grade);
+        }
 
-                        let rows = response['certificates']
+        function rank() {
+            let val = $('#select').val()
+            // console.log(val)
+            return val
+        }
 
-                        for (let i = 0; i < rows.length; i++) {
-                            let name = rows[i]['jmNm']
-                            let num = i
+        // 첫 로딩시 데이터베이스 받아와서 뿌려주기
+        function listing(grade) {
+            $.ajax({
+                type: 'GET',
+                url: '/certificate',
+                data: {},
+                success: function (response) {
+                    // console.log(response)
+                    let rows = response['certificates']
 
-                            let temp_html = `<div class="col">
-                                                <div class="card h-100" onclick="cert_info(${num})" id="card">
+                    for (let i = 0; i < rows.length; i++) {
+                        let name = rows[i]['jmNm']
+                        let num = rows[i]['certificateNum']
+                        let index = rows[i]['index']
+
+                        if (name != null) {
+                            if (grade == index) {
+                                let temp_html = `<div class="col">
+                                                <div class="card h-100" onclick="cert_info(${num}, ${index})" id="card">
                                                     <img src="https://cdn-icons-png.flaticon.com/512/5983/5983508.png" class="card-img-top" alt="...">
                                                     <div class="card-body">
                                                         <h5 class="card-title">${name}</h5>
@@ -90,25 +113,64 @@
                                                 </div>
                                             </div>`
 
-                            $('#cards-box').append(temp_html)
+                                $('#cards-box').append(temp_html)
+                            }
                         }
 
                     }
-                })
-            }
 
-            function cert_info(num) {
-                alert(num+'번 자격증')
+                }
+            })
+        }
 
-                $.ajax({
-                    type: 'POST',
-                    url: '/certificateDetails',
-                    data: {num_give: num},
-                    success: function (response) {
-                        alert('정상작동')
-                    }
-                })
-            }
+
+        // function listing() {
+        //     $.ajax({
+        //         type: 'GET',
+        //         url: '/certificate',
+        //         data: {},
+        //         success: function (response) {
+        //
+        //             console.log(response)
+        //             let rows = response['certificates']
+        //
+        //             for (let i = 0; i < rows.length; i++) {
+        //                 let name = rows[i]['jmNm']
+        //                 let num = rows[i]['certificateNum']
+        //                 let index = rows[i]['index']
+        //
+        //                 let temp_html = `<div class="col">
+        //                                         <div class="card h-100" onclick="cert_info(${num}, ${index})" id="card">
+        //                                             <img src="https://cdn-icons-png.flaticon.com/512/5983/5983508.png" class="card-img-top" alt="...">
+        //                                             <div class="card-body">
+        //                                                 <h5 class="card-title">${name}</h5>
+        //                                             </div>
+        //                                         </div>
+        //                                     </div>`
+        //
+        //                 $('#cards-box').append(temp_html)
+        //             }
+        //
+        //         }
+        //     })
+        // }
+
+
+        // 클라이언트에서 서버에 값 넘겨주기
+        function cert_info(num, index) {
+            alert(num + '번 자격증')
+            alert(index + '등급 자격증')
+
+            $.ajax({
+                type: 'POST',
+                url: '/certificateDetails',
+                data: {num_give: num, index_give: index},
+                success: function (response) {
+                    alert('정상작동')
+                }
+            })
+        }
+
     </script>
 </head>
 <body>
@@ -117,9 +179,18 @@
     <div class="logout">
         <button type="button" class="btn btn-dark">Logout</button>
     </div>
-    <div class="search_bar">
-        <input class="search_input form-control me-2" type="search" placeholder="자격증 검색" aria-label="Search">
-        <button type="button" class="btn btn-dark">Search button</button>
+    <div class="logo">
+    </div>
+</div>
+
+<div>
+    <div class="select-box">
+        <select class="form-select" aria-label="Default select example" id="select" onchange="change()">
+            <option value="1" selected>기술사</option>
+            <option value="2">기능장</option>
+            <option value="3">기사</option>
+            <option value="4">기능사</option>
+        </select>
     </div>
 </div>
 
@@ -127,5 +198,6 @@
     <div class="row row-cols-1 row-cols-md-6 g-4" id="cards-box">
     </div>
 </div>
+
 </body>
 </html>

@@ -45,7 +45,8 @@ def certificate_Details():
 # @app.route('/certificateDetails', methods=["POST"])
 # def certificate_Details():
 #     num_receive = request.form['num_give']
-#     print(num_receive)
+#     index_receive = request.form['index_give']
+#     print(num_receive, index_receive)
 #     return render_template('certificateDetails.html')
 
 # 자격증 세부정보 가져오기
