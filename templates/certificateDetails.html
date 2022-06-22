@@ -30,17 +30,55 @@
         // 자격증 코멘드 남기기 버튼 구현
         function save_comment() {
             let comment = $("#comment_textarea").val()
+            let nickname = $("#nickname").val()
             $.ajax({
                 type:"POST",
                 url:'/certificateDetails/post_comment',
                 data:{
                     comment_give:comment,
                     certificateNum_give:{{ certificateNum }},
-                    click_index_give:{{ click_index }}
+                    click_index_give:{{ click_index }},
+                    nickname_give:nickname
                 },
                 success:function (response) {
                     alert(response['msg'])
                     window.location.reload()
+                }
+            })
+        }
+        // 코멘트 생성
+        function comment_list() {
+            $.ajax({
+                type: "GET",
+                url: "/certificateDetails/comment_list",
+                data: {},
+                success: function (response) {
+                    let rows = response["comment_list"]
+                    let certificate_index = ""
+                    let certificate_number = ""
+                    let comment = ""
+                    let click_index = {{ click_index }};
+                    let cer_number = {{ certificateNum }};
+                    for(let i = 0; i < rows.length; i++) {
+                        certificate_index = rows[i]["certificate_index"]
+                        certificate_number = rows[i]["certificate_number"]
+                        if (click_index === parseInt(certificate_index) && cer_number === parseInt(certificate_number)) {
+                            // console.log(rows[i]["comment"])
+                            comment = `
+                                <div class="card">
+                                    <div class="card-body">
+                                        <blockquote class="blockquote mb-0">
+                                            <p>${rows[i]["comment"]}</p>
+                                            <footer class="blockquote-footer">${rows[i]["name"]}</footer>
+                                        </blockquote>
+                                    </div>
+                                </div>
+                            `
+                            $("#comment-list").append(comment)
+                        }
+                    }
+                    // DB 확인
+                    // console.log(rows)
                 }
             })
         }
@@ -92,6 +130,10 @@
     </div>
     <div id="comment">
         <div class="input_comment">
+            <div class="form-floating mb-3">
+                <input id="nickname" type="text" class="form-control" placeholder="name@example.com">
+                <label>별명</label>
+            </div>
             <div class="form-floating">
             <textarea class="form-control" placeholder="Leave a comment here" id="comment_textarea" style="height: 100px"></textarea>
                 <label for="floatingTextarea2">자격증 코멘트</label>
@@ -100,14 +142,7 @@
         </div>
     </div>
     <div class="comment_cards" id="comment-list">
-        <div class="card">
-            <div class="card-body">
-                <blockquote class="blockquote mb-0">
-                    <p>자격증 코멘트</p>
-                    <footer class="blockquote-footer">{{ nickname }}</footer>
-                </blockquote>
-            </div>
-        </div>
+
     </div>
 </body>
 </html>

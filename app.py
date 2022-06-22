@@ -135,7 +135,7 @@ def home():
         payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
         user_info = db.user.find_one({"id": payload['id']})
         print(user_info)
-        return render_template('index.html', nickname=user_info["name"])
+        return render_template('index.html', nickname=user_info["id"])
     except jwt.ExpiredSignatureError:
         return redirect(url_for("login", msg="로그인 시간이 만료되었습니다."))
     except jwt.exceptions.DecodeError:
@@ -160,8 +160,8 @@ def certificate_get():
 
 # ========================================================================================
 # 세모자 자격증 세부정보
-@app.route('/certificateDetails/<nickname>/<index>/<num>', methods=["GET"])
-def certificate_Details(nickname,index,num):
+@app.route('/certificateDetails/<index>/<num>', methods=["GET"])
+def certificate_Details(index,num):
     certificate = list(db.certificate.find({}, {'_id': False}))
     for i in range(0,len(certificate)):
         if int(certificate[i]['index']) == int(index) and int(certificate[i]['certificateNum']) == int(num):
@@ -174,7 +174,6 @@ def certificate_Details(nickname,index,num):
             summary = certificate[i]["summary"]
     return render_template("certificateDetails.html",
                            certificateNum=certificateNum,
-                           nickname=nickname,
                            implNm=implNm,
                            click_index=click_index,
                            instiNm=instiNm,
@@ -196,19 +195,24 @@ def get_certificate_Details():
 @app.route('/certificateDetails/post_comment', methods=["POST"])
 def post_certificate_comment():
     comment_receive = request.form["comment_give"]
-    # id_receive = "" # 어떤 아이디가 입력을 했는지 확인이 필요
-    certificate_id_receive = "" # 자격증에 대한 id 부여 필요
     certificateNum_receive = request.form["certificateNum_give"]
-    certificateNum_receive = request.form["click_index_give"]
-
-
+    click_index_receive = request.form["click_index_give"]
+    name_receive = request.form["nickname_give"]
+    print(comment_receive, click_index_receive, certificateNum_receive)
     doc = {
-        "certificate_id":certificate_id_receive,
-        "id":id_receive,
-        "comment":comment_receive
+        "certificate_index":click_index_receive,
+        "certificate_number":certificateNum_receive,
+        "comment":comment_receive,
+        "name":name_receive
     }
-    # db.certificate_comment.insert_one(doc)
+    db.certificate_comment.insert_one(doc)
     return jsonify({'msg':'코멘트 입력이 완료되었습니다.'})
+
+# 자격증 코멘트 불러오기 - 자격증 index, number에 따라 다른 코멘드 불러올것
+@app.route('/certificateDetails/comment_list', methods=["GET"])
+def comment_list():
+    comment_list = list(db.certificate_comment.find({}, {'_id': False}))
+    return jsonify({'comment_list': comment_list})
 
 # db.user.insert_one(doc)
 # db.certificate.insert_one(doc)
