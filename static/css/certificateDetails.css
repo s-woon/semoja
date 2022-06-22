@@ -1,3 +1,8 @@
+* {
+    font-family: 'Noto Serif KR', serif;
+}
+
+
 .main_nav {
     width: 100%;
     height: 250px;
@@ -14,8 +19,19 @@
     justify-content: center;
 }
 
+.main_nav > h1 {
+    margin-bottom: 20px;
+}
+
 .logout {
-    margin: 10px 10% 100px 90%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 10px 0px 10px 70%;
+}
+
+.logout > button {
+    margin: 5px;
 }
 
 .search_bar {
@@ -23,4 +39,71 @@
     flex-direction: row;
     align-items: center;
     justify-content: center;
+}
+
+/* 본문 css 코드 */
+/* 이미지, 자격증 정보 영역 */
+#certificate_detail {
+    padding: 20px;
+    margin-top: 20px;
+    margin-left: 10%;
+    margin-right: 10%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0px 0px 10px 0px black;
+}
+
+#certificate_info{
+    margin: 30px auto 25px auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#certificate_info > img {
+    height: 350px;
+}
+
+#certificate_info > ul {
+    margin-top: 10px;
+    margin-left: 50px;
+    font-size: 30px;
+}
+
+/*개요 영역*/
+#summary {
+    width: 95%;
+    max-width: 800px;
+}
+
+/* 코멘트 영역 */
+#comment {
+    display: flex;
+    justify-content: center;
+}
+
+.input_comment {
+    width: 95%;
+    max-width: 500px;
+    margin: 20px auto 20px auto;
+
+    box-shadow: 0px 0px 3px 0px black;
+    padding: 20px;
+}
+
+.input_comment > button {
+    margin-top: 15px;
+}
+
+.comment_cards {
+    width: 95%;
+    max-width: 500px;
+    margin: auto;
+}
+
+.comment_cards > .card {
+    margin-top: 10px;
+    margin-bottom: 10px;
 }
