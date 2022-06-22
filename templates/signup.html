@@ -47,17 +47,42 @@
         }
 
     </style>
+    <script>
+        function signup_cencel() {
+            window.location.href = "/login"
+        }
+        function signup() {
+            let id = $('#id').val()
+            let pw = $('#pw').val()
+            let name = $('#name').val()
+            let email = $('#email').val()
+            let num = $('#num').val()
+
+            $.ajax({
+                type: 'POST',
+                url: '/api/signup',
+                data: {
+                    id_give: id,
+                    pw_give: pw,
+                    name_give: name,
+                    email_give: email,
+                    num_give: num
+                },
+                success: function (response) {
+                    alert(response['msg'])
+                    window.location.href = '/login'
+                }
+            });
+        }
+    </script>
 
 </head>
 
 <body>
-
     <div class="title">
         <h1> 세 모 자 : 회원가입</h1>
     </div>
-
     <div class="wrap">
-
         <div class="input-group mb-3">
             <input type="text" class="form-control" placeholder="아이디" aria-label="Recipient's username"
                    aria-describedby="basic-addon2">
@@ -739,8 +764,8 @@
         </div></p>
 
         <div class="input-group-append final">
-            <button class="btn btn-outline-secondary sign-up" type="button">회원가입</button>
-            <button class="btn btn-outline-secondary" type="button">취소</button>
+            <button class="btn btn-outline-secondary sign-up" type="button" onclick="signup()">회원가입</button>
+            <button class="btn btn-outline-secondary" type="button" onclick="signup_cencel()">취소</button>
         </div>
     </div>
 

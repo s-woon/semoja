@@ -17,12 +17,18 @@
             integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
             crossorigin="anonymous"></script>
 
+    <!-- JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js"></script>
+
     <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@200;300;400;500;600;700;900&display=swap"
           rel="stylesheet">
 
-    <title>세모자 - 자격증 상세정보</title>
+    <title>세모자 - 세상의 모든 자격증</title>
     <!--  CSS 영역  -->
     <style>
+        * {
+    font-family: 'Nanum Myeongjo', serif;
+}
         .main_nav {
             width: 100%;
             height: 250px;
@@ -39,8 +45,19 @@
             justify-content: center;
         }
 
+        .main_nav > h1 {
+            margin-bottom: 20px;
+        }
+
         .logout {
-            margin: 10px 10% 100px 90%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 10px 0px 10px 70%;
+        }
+
+        .logout > button {
+            margin: 5px;
         }
 
         .search_bar {
@@ -49,27 +66,105 @@
             align-items: center;
             justify-content: center;
         }
+
+        .mycards {
+            margin: 20px auto 0px auto;
+            width: 95%;
+            max-width: 1200px;
+        }
+
+        .card-title {
+            text-align: center
+        }
     </style>
+
     <!--  자바스크립트 영역  -->
     <script>
+        $(document).ready(function () {
+            let grade = rank();
+            listing(grade);
+        });
 
+        // 로그아웃 버튼
+        // 로그아웃은 내가 가지고 있는 토큰만 쿠키에서 없애면 됩니다.
+        function logout() {
+            $.removeCookie('mytoken');
+            alert('로그아웃!')
+            window.location.href = '/login'
+        }
+
+        function change() {
+            $('#cards-box').empty()
+            let grade = rank();
+            listing(grade);
+        }
+
+        function rank() {
+            let val = $('#select_certificate').val()
+            // console.log(val)
+            return val
+        }
+
+        // 첫 로딩시 데이터베이스 받아와서 뿌려주기
+        function listing(grade) {
+            $.ajax({
+                type: 'GET',
+                url: '/certificate',
+                data: {},
+                success: function (response) {
+                    console.log(response)
+                    let rows = response['certificates']
+
+                    for (let i = 0; i < rows.length; i++) {
+                        let name = rows[i]['jmNm']
+                        let num = rows[i]['certificateNum']
+                        let index = rows[i]['index']
+
+                        if (name != null) {
+                            if (grade == index) {
+                                let temp_html = `<div class="col">
+                                                <div class="card h-100" onclick="cert_info(${num}, ${index})" id="card">
+                                                    <img src="https://cdn-icons-png.flaticon.com/512/5983/5983508.png" class="card-img-top" alt="...">
+                                                    <div class="card-body">
+                                                        <h5 class="card-title">${name}</h5>
+                                                    </div>
+                                                </div>
+                                            </div>`
+                                $('#cards-box').append(temp_html)
+                            }
+                        }
+                    }
+                }
+            })
+        }
+
+        // 클라이언트에서 서버에 값 넘겨주기
+        function cert_info(num, index) {
+            window.location.href = "/certificateDetails/{{ nickname }}/"+index+"/"+num
+        }
     </script>
 </head>
 <body>
-
-<div class="main_nav">
-    <div class="logout">
-        <button type="button" class="btn btn-dark">Logout</button>
+    <div class="main_nav">
+        <div class="logout">
+            <button type="button" class="btn btn-dark">회원정보변경</button>
+            <button type="button" class="btn btn-dark" onclick="logout()">Logout</button>
+        </div>
+        <h1>세모자 - 자격증 상세정보</h1>
+        <div class="search_bar">
+            <!--            <input class="search_input form-control me-2" type="search" placeholder="자격증 검색" aria-label="Search">-->
+            <!--            <button type="button" class="btn btn-dark">Search 버튼</button>-->
+            <select class="form-select form-select-lg mb-3" aria-label=".form-select-lg example" id="select_certificate" onchange="change()">
+                <option value="1" selected>기술사 자격증</option>
+                <option value="2">기능장 자격증</option>
+                <option value="3">기사 자격증</option>
+                <option value="4">기능사 자격증</option>
+            </select>
+        </div>
     </div>
-    <div class="search_bar">
-        <input class="search_input form-control me-2" type="search" placeholder="자격증 검색" aria-label="Search">
-        <button type="button" class="btn btn-dark">Search button</button>
+    <div class="mycards">
+        <div class="row row-cols-1 row-cols-md-6 g-4" id="cards-box">
+        </div>
     </div>
-</div>
-
-<div class="mycards">
-    <div class="row row-cols-1 row-cols-md-6 g-4" id="cards-box">
-    </div>
-</div>
 </body>
 </html>

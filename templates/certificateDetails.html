@@ -19,38 +19,74 @@
     <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@200;300;400;500;600;700;900&display=swap"
           rel="stylesheet">
 
+    <!-- JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js"></script>
+
     <script type="text/javascript" src="/static/js/certificateDetails.js"></script>
     <link rel="stylesheet" type="text/css" href="/static/css/certificateDetails.css">
 
     <title>세모자 - 자격증 상세정보</title>
+    <script>
+        // 자격증 코멘드 남기기 버튼 구현
+        function save_comment() {
+            let comment = $("#comment_textarea").val()
+            $.ajax({
+                type:"POST",
+                url:'/certificateDetails/post_comment',
+                data:{
+                    comment_give:comment,
+                    certificateNum_give:{{ certificateNum }},
+                    click_index_give:{{ click_index }}
+                },
+                success:function (response) {
+                    alert(response['msg'])
+                    window.location.reload()
+                }
+            })
+        }
+    </script>
 </head>
 <body>
     <div class="main_nav">
         <div class="logout">
             <button type="button" class="btn btn-dark">회원정보변경</button>
-            <button type="button" class="btn btn-dark">Logout</button>
+            <button type="button" class="btn btn-dark" onclick="logout()">Logout</button>
         </div>
         <h1>세모자 - 자격증 상세정보</h1>
         <div class="search_bar">
 <!--            <input class="search_input form-control me-2" type="search" placeholder="자격증 검색" aria-label="Search">-->
 <!--            <button type="button" class="btn btn-dark">Search 버튼</button>-->
-            <select class="form-select form-select-lg mb-3" aria-label=".form-select-lg example">
+            <select class="form-select form-select-lg mb-3" aria-label=".form-select-lg example" id="select_certificate" onchange="change()">
                 <option value="1" selected>기술사 자격증</option>
                 <option value="2">기능장 자격증</option>
                 <option value="3">기사 자격증</option>
                 <option value="4">기능사 자격증</option>
             </select>
+            <button class="btn btn-dark" onclick="backpage()">이전 화면</button>
         </div>
     </div>
     <div id="certificate_detail">
         <div id="certificate_info">
             <img src="https://cdn-icons-png.flaticon.com/512/6158/6158293.png">
             <ul id="certificate_ul">
-
+                {% if click_index == 1 %}
+                    <li>구분 : 기술사 자격증</li>
+                {% elif click_index == 2 %}
+                    <li>구분 : 기능장 자격증</li>
+                {% elif click_index == 3 %}
+                    <li>구분 : 기사 자격증</li>
+                {% else %}
+                    <li>구분 : 기능사 자격증</li>
+                {% endif %}
+                <li>자격명 : {{ jmNm }}</li>
+                <li>직종 : {{ mdobligFldNm }}</li>
+                <li>시행기관 : {{ implNm  }}</li>
+                <li>관련부처 : {{ instiNm }}</li>
             </ul>
         </div>
         <div id="summary">
             <h2>개요</h2>
+            <p>{{ summary|safe }}</p>
         </div>
         <button id="comment_toggle" class="btn btn-dark" onclick="toggle_comment_button()" value="1">코멘트 입력 숨기기</button>
     </div>
@@ -68,11 +104,10 @@
             <div class="card-body">
                 <blockquote class="blockquote mb-0">
                     <p>자격증 코멘트</p>
-                    <footer class="blockquote-footer">아이디</footer>
+                    <footer class="blockquote-footer">{{ nickname }}</footer>
                 </blockquote>
             </div>
         </div>
-    </div>
     </div>
 </body>
 </html>
