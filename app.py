@@ -103,14 +103,13 @@ def signup():
 # [회원가입 API]
 # id, pw, name, email, num정보를 받아서 mongoDB에 저장합니다.
 # 저장하기 전에, pw를 sha256 방법(=단방향 암호화. 풀어볼 수 없음)으로 암호화해서 저장합니다.
-
-@app.route("/api/signup", methods=["POST"])
+@app.route("/sign_up/save", methods=["POST"])
 def api_register():
     id_receive = request.form['id_give']
-    pw_receive = request.form['pw_give']
+    pw_receive = request.form['password_give']
     name_receive = request.form['name_give']
-    email_receive = request.form['email_give']
-    num_receive = request.form['num_give']
+    email_receive = request.form['num_give']
+    num_receive = request.form['email_give']
 
     pw_hash = hashlib.sha256(pw_receive.encode('utf-8')).hexdigest()
 
@@ -125,6 +124,14 @@ def api_register():
     db.user.insert_one(doc)
 
     return jsonify({'msg': '회원가입이 완료되었습니다.'})
+
+# 아이디 중복확인
+@app.route('/sign_up/check_dup', methods=['POST'])
+def check_dup():
+    username_receive = request.form['username_give']
+    exists = bool(db.user.find_one({"id": username_receive}))
+    print(exists)
+    return jsonify({'result': 'success', 'exists': exists})
 
 # ========================================================================================
 # 세모자 메인 카테고리 화면
