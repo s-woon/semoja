@@ -101,7 +101,6 @@ def signup():
     return render_template('signup.html')
 
 # [회원가입 API]
-# id, pw, name, email, num정보를 받아서 mongoDB에 저장합니다.
 # 저장하기 전에, pw를 sha256 방법(=단방향 암호화. 풀어볼 수 없음)으로 암호화해서 저장합니다.
 @app.route("/sign_up/save", methods=["POST"])
 def api_register():
@@ -122,7 +121,6 @@ def api_register():
     }
 
     db.user.insert_one(doc)
-
     return jsonify({'msg': '회원가입이 완료되었습니다.'})
 
 # 아이디 중복확인
@@ -153,22 +151,11 @@ def certificate_get():
     certificate_list = list(db.certificate.find({}, {'_id': False}))
     return jsonify({'certificates': certificate_list})
 
-# # 카테고리 클릭 정보 넘기기
-# @app.route('/certificateDetails/post_certificate_num', methods=["POST"])
-# def post_certificate_num():
-#     num_receive = request.form['_num_give']
-#     index_receive = request.form['_index_give']
-#     doc = {
-#         'index':index_receive,
-#         'num':num_receive
-#     }
-#     return jsonify({'msg':doc})
-
 
 # ========================================================================================
 # 세모자 자격증 세부정보
-@app.route('/certificateDetails/<index>/<num>', methods=["GET"])
-def certificate_Details(index,num):
+@app.route('/certificateDetails/<id>/<index>/<num>', methods=["GET"])
+def certificate_Details(id,index,num):
     certificate = list(db.certificate.find({}, {'_id': False}))
     for i in range(0,len(certificate)):
         if int(certificate[i]['index']) == int(index) and int(certificate[i]['certificateNum']) == int(num):
@@ -180,6 +167,7 @@ def certificate_Details(index,num):
             mdobligFldNm = certificate[i]["mdobligFldNm"]
             summary = certificate[i]["summary"]
     return render_template("certificateDetails.html",
+                           id=id,
                            certificateNum=certificateNum,
                            implNm=implNm,
                            click_index=click_index,
@@ -223,6 +211,43 @@ def comment_list():
 
 # db.user.insert_one(doc)
 # db.certificate.insert_one(doc)
+
+
+# 회원정보변경 페이지 이동
+@app.route('/member_info')
+def member_info():
+    return render_template("member_info.html")
+
+# 회원정보 변경
+# id값을 어디선가 가져와서 keyword로 받아서 DB에서 조회해서 불러온다. - 단 PW의 값은 받지 않도록 한다.
+@app.route('/member_info/<keyword>', methods=["GET"])
+def get_member_info(keyword):
+    user_member_info = list(db.user.find({'id':keyword}, {'_id': False}))
+    id = user_member_info[0]["id"]
+    name = user_member_info[0]["name"]
+    num = user_member_info[0]["num"]
+    email = user_member_info[0]["email"]
+    print(name)
+    return render_template("member_info.html", id=id, name=name, num=num, email=email)
+
+# 회원정보 수정 저장
+# 저장하기 전에, pw를 sha256 방법(=단방향 암호화. 풀어볼 수 없음)으로 암호화해서 저장합니다.
+@app.route("/member_info/save", methods=["POST"])
+def post_member_info():
+    id_receive = request.form['id_give']
+    pw_receive = request.form['password_give']
+    name_receive = request.form['name_give']
+    email_receive = request.form['num_give']
+    num_receive = request.form['email_give']
+
+    pw_hash = hashlib.sha256(pw_receive.encode('utf-8')).hexdigest()
+
+    db.user.update_one({'id': id_receive}, {'$set': {'pw': pw_hash}})
+    db.user.update_one({'id': id_receive}, {'$set': {'name': name_receive}})
+    db.user.update_one({'id': id_receive}, {'$set': {'num': num_receive}})
+    db.user.update_one({'id': id_receive}, {'$set': {'email': email_receive}})
+
+    return jsonify({'msg': '회원정보가 수정되었습니다.'})
 
 if __name__ == '__main__':
     app.run('0.0.0.0', port=5000, debug=True)

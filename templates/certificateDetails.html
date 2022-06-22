@@ -27,24 +27,35 @@
 
     <title>세모자 - 자격증 상세정보</title>
     <script>
+        // 회원정보변경 버튼
+        function member_info() {
+            window.location.href = '/member_info/{{ id }}'
+        }
+
         // 자격증 코멘드 남기기 버튼 구현
         function save_comment() {
             let comment = $("#comment_textarea").val()
             let nickname = $("#nickname").val()
-            $.ajax({
-                type:"POST",
-                url:'/certificateDetails/post_comment',
-                data:{
-                    comment_give:comment,
-                    certificateNum_give:{{ certificateNum }},
-                    click_index_give:{{ click_index }},
-                    nickname_give:nickname
-                },
-                success:function (response) {
-                    alert(response['msg'])
-                    window.location.reload()
-                }
-            })
+            if (comment == null | comment == undefined | comment == ""){
+                alert("자격증에 대한 코멘트를 남겨주세요.")
+            } else if (nickname == null | nickname == undefined | nickname == ""){
+                alert("별명을 적어주세요!")
+            } else {
+                $.ajax({
+                    type:"POST",
+                    url:'/certificateDetails/post_comment',
+                    data:{
+                        comment_give:comment,
+                        certificateNum_give:{{ certificateNum }},
+                        click_index_give:{{ click_index }},
+                        nickname_give:nickname
+                    },
+                    success:function (response) {
+                        alert(response['msg'])
+                        window.location.reload()
+                    }
+                })
+            }
         }
         // 코멘트 생성
         function comment_list() {
@@ -87,7 +98,7 @@
 <body>
     <div class="main_nav">
         <div class="logout">
-            <button type="button" class="btn btn-dark">회원정보변경</button>
+            <button type="button" class="btn btn-dark" onclick="member_info()" >회원정보변경</button>
             <button type="button" class="btn btn-dark" onclick="logout()">Logout</button>
         </div>
         <h1>세모자 - 자격증 상세정보</h1>

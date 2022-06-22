@@ -85,6 +85,10 @@
             listing(grade);
         });
 
+        function member_info() {
+            window.location.href = '/member_info/{{ nickname }}'
+        }
+
         // 로그아웃 버튼
         // 로그아웃은 내가 가지고 있는 토큰만 쿠키에서 없애면 됩니다.
         function logout() {
@@ -137,17 +141,16 @@
                 }
             })
         }
-
         // 클라이언트에서 서버에 값 넘겨주기
         function cert_info(num, index) {
-            window.location.href = "/certificateDetails/"+index+"/"+num
+            window.location.href = "/certificateDetails/{{ nickname }}/"+index+"/"+num
         }
     </script>
 </head>
 <body>
     <div class="main_nav">
         <div class="logout">
-            <button type="button" class="btn btn-dark">회원정보변경</button>
+            <button type="button" class="btn btn-dark" onclick="member_info()">회원정보변경</button>
             <button type="button" class="btn btn-dark" onclick="logout()">Logout</button>
         </div>
         <h1>세모자 - 자격증 카테고리</h1>
