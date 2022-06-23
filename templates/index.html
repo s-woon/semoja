@@ -144,6 +144,40 @@
             })
         }
 
+        // 검색 버튼
+        function search_button() {
+            let user_input = $("#search").val()
+            $('#cards-box').empty()
+            $.ajax({
+                type: "POST",
+                url: "/certificate/search",
+                data: {
+                    input_give:user_input
+                },
+                success: function (response) {
+                    // console.log(response)
+                    let rows = response['result']
+                    for (let i = 0; i < rows.length; i++) {
+                        let name = rows[i]['jmNm']
+                        let num = rows[i]['certificateNum']
+                        let index = rows[i]['index']
+
+                        if (name != null) {
+                            let temp_html = `<div class="col">
+                                            <div class="card h-100" onclick="cert_info(${num}, ${index})" id="card">
+                                                <img src="https://cdn-icons-png.flaticon.com/512/5983/5983508.png" class="card-img-top" alt="...">
+                                                <div class="card-body">
+                                                    <h5 class="card-title">${name}</h5>
+                                                </div>
+                                            </div>
+                                        </div>`
+                            $('#cards-box').append(temp_html)
+                        }
+                    }
+                }
+            })
+        }
+
         // 클라이언트에서 서버에 값 넘겨주기
         function cert_info(num, index) {
             window.location.href = "/certificateDetails/{{ nickname }}/" + index + "/" + num
@@ -169,6 +203,10 @@
                 <option value="3">기사 자격증</option>
                 <option value="4">기능사 자격증</option>
             </select>
+            <div>
+                <input type="text" id="search" placeholder="원하는 자격증을 검색해주세요.">
+                <button class="btn btn-dark" id="search_button" onclick="search_button()">검색</button>
+            </div>
         </div>
     </div>
 

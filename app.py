@@ -150,10 +150,25 @@ def home():
     except jwt.exceptions.DecodeError:
         return redirect(url_for("login", msg="로그인 정보가 존재하지 않습니다."))
 
+# MongoDB 데이터 가져오기
 @app.route("/certificate", methods=["GET"])
 def certificate_get():
     certificate_list = list(db.certificate.find({}, {'_id': False}))
     return jsonify({'certificates': certificate_list})
+
+# 자격증 검색기능
+@app.route("/certificate/search", methods=["POST"])
+def search_certificate():
+    user_input_receive = request.form["input_give"]
+    certificate = list(db.certificate.find({}, {'_id': False}))
+    search_list = []
+    for i in certificate:
+        jmNm = i["jmNm"]
+        if jmNm == None:
+            pass
+        elif user_input_receive in jmNm:
+            search_list.append(i)
+    return jsonify({'result': search_list})
 
 
 # ========================================================================================
@@ -215,7 +230,6 @@ def comment_list():
 
 # db.user.insert_one(doc)
 # db.certificate.insert_one(doc)
-
 
 # 회원정보변경 페이지 이동
 @app.route('/member_info')
