@@ -27,15 +27,15 @@
     <!--  CSS 영역  -->
     <style>
         * {
-    font-family: 'Nanum Myeongjo', serif;
-}
+            font-family: 'Nanum Myeongjo', serif;
+        }
+
         .main_nav {
             width: 100%;
             height: 250px;
 
-            background-image: linear-gradient(0deg, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('https://cdn-icons-png.flaticon.com/512/6158/6158293.png');
-            background-position: center;
-            background-size: cover;
+            background-color: lightgreen;
+            border-bottom: lightgray solid 1px;
 
             color: white;
 
@@ -45,26 +45,27 @@
             justify-content: center;
         }
 
-        .main_nav > h1 {
-            margin-bottom: 20px;
-        }
-
         .logout {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 10px 0px 10px 70%;
-        }
+            width: 300px;
+            margin: 10px 10% 0px 90%;
 
-        .logout > button {
-            margin: 5px;
-        }
-
-        .search_bar {
             display: flex;
             flex-direction: row;
             align-items: center;
             justify-content: center;
+        }
+
+        .logout > button {
+            margin-right: 10px;
+        }
+
+        .logo {
+            width:400px;
+            height:200px;
+            background-image: url('/static/logo.png');
+            background-position: center;
+            background-size: 40%;
+            background-repeat: no-repeat;
         }
 
         .mycards {
@@ -73,8 +74,9 @@
             max-width: 1200px;
         }
 
-        .card-title {
-            text-align: center
+        .select-box {
+            margin: 20px auto;
+            width: 200px;
         }
     </style>
 
@@ -141,9 +143,10 @@
                 }
             })
         }
+
         // 클라이언트에서 서버에 값 넘겨주기
         function cert_info(num, index) {
-            window.location.href = "/certificateDetails/{{ nickname }}/"+index+"/"+num
+            window.location.href = "/certificateDetails/{{ nickname }}/" + index + "/" + num
         }
     </script>
 </head>
@@ -153,11 +156,14 @@
             <button type="button" class="btn btn-dark" onclick="member_info()">회원정보변경</button>
             <button type="button" class="btn btn-dark" onclick="logout()">Logout</button>
         </div>
-        <h1>세모자 - 자격증 카테고리</h1>
-        <div class="search_bar">
-            <!--            <input class="search_input form-control me-2" type="search" placeholder="자격증 검색" aria-label="Search">-->
-            <!--            <button type="button" class="btn btn-dark">Search 버튼</button>-->
-            <select class="form-select form-select-lg mb-3" aria-label=".form-select-lg example" id="select_certificate" onchange="change()">
+        <div class="logo">
+        </div>
+    </div>
+
+    <div>
+        <div class="select-box">
+            <select class="form-select form-select-lg mb-3" aria-label=".form-select-lg example" id="select_certificate"
+                    onchange="change()" style="background-color: lightgray">
                 <option value="1" selected>기술사 자격증</option>
                 <option value="2">기능장 자격증</option>
                 <option value="3">기사 자격증</option>
@@ -165,6 +171,7 @@
             </select>
         </div>
     </div>
+
     <div class="mycards">
         <div class="row row-cols-1 row-cols-md-6 g-4" id="cards-box">
         </div>

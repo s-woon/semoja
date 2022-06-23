@@ -139,14 +139,14 @@
                             </div>
 
                             <p>이름<input id="input-name" class="input" type="text" placeholder="이름" value="{{ name }}"></p>
-
-                            <p>전화번호<input id="input-num" class="input" type="text" placeholder="전화번호" value="{{ email }}"></p>
+                            <!-- 코드가 꼬인것인지 num값이 email 양식에 들어가고, email값이 num 양식에 들어가서 일단 변경 -->
+                            <p>전화번호<input id="input-num" class="input" type="text" placeholder="전화번호" value="{{ num }}"></p>
 
                             <p>이메일</p>
                             <div class="field has-addons">
                                 <div class="control" style="width:100%">
                                     <!-- 코드가 꼬인것인지 num값이 email 양식에 들어가고, email값이 num 양식에 들어가서 일단 변경 -->
-                                    <input id="input-email" class="input" type="text" placeholder="이메일" value="{{ num }}">
+                                    <input id="input-email" class="input" type="text" placeholder="이메일" value="{{ email }}">
                                 </div>
                                 <div id="btn-check-dup" class="control">
                                     <button class="button" onclick="check_email()">확인</button>
